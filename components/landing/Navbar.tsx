@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '../ui/Button';
-import { Menu, X, Sparkles } from 'lucide-react';
+import { Menu, X, Sparkles, Lock } from 'lucide-react';
 
 interface NavbarProps {
   onOpenBooking: () => void;
@@ -25,7 +25,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onNavigate }) => 
             <a href="#services" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">Services</a>
             <a href="#" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">Pricing</a>
             <a href="#" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">About</a>
-            <a href="#" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">Contact</a>
+            <button 
+              onClick={() => onNavigate('admin')}
+              className="flex items-center text-sm font-medium text-gray-400 hover:text-black transition-colors"
+            >
+              <Lock size={12} className="mr-1" />
+              Admin
+            </button>
           </div>
 
           <div className="hidden md:flex items-center space-x-6">
@@ -51,7 +57,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onNavigate }) => 
         <div className="md:hidden absolute w-full bg-white border-b border-gray-100 shadow-lg px-4 py-6 space-y-4">
            <a href="#services" className="block text-lg font-medium text-gray-900">Services</a>
            <a href="#" className="block text-lg font-medium text-gray-900">Pricing</a>
-           <button onClick={() => onNavigate('customer')} className="block text-lg font-medium text-gray-900">Login</button>
+           <button onClick={() => onNavigate('customer')} className="block text-lg font-medium text-gray-900">Customer Login</button>
+           <button onClick={() => onNavigate('admin')} className="block text-lg font-medium text-gray-500">Admin Portal</button>
            <Button onClick={onOpenBooking} fullWidth className="mt-4">Book now</Button>
         </div>
       )}

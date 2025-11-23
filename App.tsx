@@ -5,6 +5,7 @@ import { ServicesSection } from './components/landing/ServicesSection';
 import { ProcessSection } from './components/landing/ProcessSection';
 import { BookingWizard } from './components/booking/BookingWizard';
 import { CustomerDashboard } from './components/customer/CustomerDashboard';
+import { AdminDashboard } from './components/admin/AdminDashboard';
 import { Sparkles } from 'lucide-react';
 
 const TrustedBy = () => (
@@ -86,11 +87,15 @@ const Footer = () => (
 );
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'customer'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'customer' | 'admin'>('home');
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   if (currentView === 'customer') {
     return <CustomerDashboard onLogout={() => setCurrentView('home')} onNewBooking={() => setIsBookingOpen(true)} />;
+  }
+
+  if (currentView === 'admin') {
+    return <AdminDashboard onBack={() => setCurrentView('home')} />;
   }
 
   return (
