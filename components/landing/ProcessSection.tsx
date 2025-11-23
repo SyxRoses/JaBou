@@ -69,8 +69,8 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onBook }) => {
           <div className="relative">
              <div className="aspect-w-4 aspect-h-3 rounded-3xl overflow-hidden shadow-2xl">
                <img 
-                 src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=2070&auto=format&fit=crop" 
-                 alt="Cleaning Process" 
+                 src="https://plus.unsplash.com/premium_photo-1661342406213-33230c49219c?q=80&w=2070&auto=format&fit=crop" 
+                 alt="Professional Cleaner" 
                  className="w-full h-full object-cover"
                />
              </div>

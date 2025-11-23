@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   CloudSun, 
   TrendingUp, 
-  Users, 
   Clock, 
   MapPin, 
   Plus, 
@@ -11,10 +10,17 @@ import {
   DollarSign,
   ChevronRight,
   MoreHorizontal,
-  Bell
+  Bell,
+  Search,
+  Filter,
+  X,
+  CheckCircle2,
+  Circle,
+  AlertCircle,
+  MoreVertical,
+  Calendar
 } from 'lucide-react';
 import { LiveMap } from './LiveMap';
-import { Button } from '../ui/Button';
 
 // --- Demo Data Configuration ---
 const demoData = {
@@ -41,6 +47,34 @@ const demoData = {
     { id: 'Van 3', lat: 0, lng: 0, status: 'driving', rotation: 180 },
     { id: 'Van 4', lat: 0, lng: 0, status: 'driving', rotation: -45 },
     { id: 'Van 5', lat: 0, lng: 0, status: 'offline', rotation: 0 },
+  ],
+  todoList: [
+    { id: 1, text: 'Review payroll for Team Alpha', completed: false },
+    { id: 2, text: 'Order eco-friendly detergent refill', completed: true },
+    { id: 3, text: 'Call Mrs. Higgins about feedback', completed: false },
+    { id: 4, text: 'Schedule maintenance for Van #4', completed: false },
+  ],
+  kanbanData: {
+    todo: [
+      { id: 'k1', title: 'Fix Van #3 Engine', tag: 'Fleet', priority: 'high' },
+      { id: 'k2', title: 'Update Insurance Docs', tag: 'Admin', priority: 'medium' }
+    ],
+    inProgress: [
+      { id: 'k3', title: 'Call client Smith', tag: 'Support', priority: 'high' }
+    ],
+    done: [
+      { id: 'k4', title: 'Q1 Revenue Report', tag: 'Finance', priority: 'low' }
+    ]
+  },
+  dispatchBoardData: [
+    { id: 'B-1001', customer: 'Alice Freeman', address: '123 Maple Ave', service: 'Deep Clean', cleaner: 'Sarah J.', price: 250, status: 'Completed', time: '08:00 AM' },
+    { id: 'B-1002', customer: 'Bob Vance', address: 'Refrigeration Park', service: 'Standard', cleaner: 'Mike T.', price: 120, status: 'In Progress', time: '09:30 AM' },
+    { id: 'B-1003', customer: 'The Royal Hotel', address: '400 Chartres St', service: 'Commercial', cleaner: 'Team Alpha', price: 850, status: 'In Progress', time: '10:00 AM' },
+    { id: 'B-1004', customer: 'Genevieve St. John', address: '882 Esplanade', service: 'Move-out', cleaner: 'Team Beta', price: 400, status: 'Scheduled', time: '12:00 PM' },
+    { id: 'B-1005', customer: 'Convention Ctr', address: '900 Convention', service: 'Sanitization', cleaner: 'Team Gamma', price: 1200, status: 'Scheduled', time: '01:00 PM' },
+    { id: 'B-1006', customer: 'Lucas Bakery', address: 'Magazine St', service: 'Standard', cleaner: 'Jessica R.', price: 150, status: 'Pending', time: '02:30 PM' },
+    { id: 'B-1007', customer: 'Uptown Yoga', address: 'Prytania St', service: 'Deep Clean', cleaner: 'Unassigned', price: 280, status: 'Pending', time: '04:00 PM' },
+    { id: 'B-1008', customer: 'Private Residence', address: 'St Charles Ave', service: 'Standard', cleaner: 'Sarah J.', price: 180, status: 'Scheduled', time: '04:30 PM' },
   ]
 };
 
@@ -50,11 +84,37 @@ interface AdminDashboardProps {
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  
+  // State for interactivity
+  const [tasks, setTasks] = useState(demoData.todoList);
+  const [isDispatchOpen, setDispatchOpen] = useState(false);
+  const [isNewBookingOpen, setNewBookingOpen] = useState(false);
+  const [isBroadcastOpen, setBroadcastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const toggleTask = (id: number) => {
+    setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+  };
+
+  const handlePayroll = () => {
+    setToastMessage("Payroll report generated successfully. Sent to billing.");
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-zinc-900 font-sans p-6 md:p-8">
+    <div className="min-h-screen bg-gray-50 text-zinc-900 font-sans p-6 md:p-8 relative">
       
-      {/* Top Navigation Bar (Dashboard specific) */}
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[100] animate-fade-in-up">
+           <div className="bg-zinc-900 text-white px-6 py-3 rounded-full shadow-lg flex items-center space-x-3">
+              <CheckCircle2 size={18} className="text-green-400" />
+              <span className="text-sm font-medium">{toastMessage}</span>
+           </div>
+        </div>
+      )}
+
+      {/* Top Navigation Bar */}
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
@@ -75,7 +135,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
       </div>
 
       {/* Bento Grid Layout */}
-      <div className="grid grid-cols-12 gap-6 max-w-7xl mx-auto">
+      <div className="grid grid-cols-12 gap-6 max-w-7xl mx-auto pb-20">
 
         {/* 1. Welcome Card (Top Left) */}
         <div className="col-span-12 md:col-span-4 bg-white rounded-[24px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between h-48 relative overflow-hidden">
@@ -91,8 +151,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
               </div>
               <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">New Orleans, LA</span>
            </div>
-
-           {/* Decorative Background Blob */}
            <div className="absolute -top-10 -right-10 w-32 h-32 bg-yellow-50 rounded-full blur-3xl opacity-60"></div>
         </div>
 
@@ -106,7 +164,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
            </div>
            
            <div className="grid grid-cols-3 gap-8 h-full items-center">
-              {/* Metric 1 */}
               <div className="flex flex-col border-r border-gray-50 pr-4">
                   <span className="text-zinc-500 text-xs font-semibold uppercase tracking-wide mb-1">Today's Revenue</span>
                   <div className="flex items-baseline">
@@ -116,8 +173,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
                       </span>
                   </div>
               </div>
-              
-              {/* Metric 2 */}
               <div className="flex flex-col border-r border-gray-50 pr-4 pl-4">
                   <span className="text-zinc-500 text-xs font-semibold uppercase tracking-wide mb-1">Active Crews</span>
                   <div className="flex items-baseline">
@@ -125,8 +180,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
                       <span className="text-xl text-zinc-400 font-medium">/{demoData.metrics.totalCrews}</span>
                   </div>
               </div>
-
-              {/* Metric 3 */}
               <div className="flex flex-col pl-4">
                   <span className="text-zinc-500 text-xs font-semibold uppercase tracking-wide mb-1">Pending Bookings</span>
                   <div className="flex items-center justify-between">
@@ -195,16 +248,112 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
                 ))}
             </div>
             
-            <button className="w-full mt-4 py-2 text-sm font-medium text-zinc-500 hover:text-black border-t border-gray-50 transition-colors">
+            <button 
+                onClick={() => setDispatchOpen(true)}
+                className="w-full mt-4 py-2 text-sm font-medium text-zinc-500 hover:text-black border-t border-gray-50 transition-colors"
+            >
                 View Full Dispatch Board
             </button>
         </div>
 
-        {/* 5. Quick Actions (Bottom) */}
+        {/* 5. Productivity Layer (NEW) */}
+        <div className="col-span-12 grid grid-cols-12 gap-6">
+            
+            {/* Daily Tasks */}
+            <div className="col-span-12 md:col-span-4 bg-white rounded-[24px] p-6 border border-gray-100 shadow-sm min-h-[300px]">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="font-bold text-zinc-900 text-lg">Daily Tasks</h3>
+                    <button className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400">
+                        <Plus size={18} />
+                    </button>
+                </div>
+                <div className="space-y-2">
+                    {tasks.map((task) => (
+                        <div 
+                            key={task.id} 
+                            onClick={() => toggleTask(task.id)}
+                            className={`flex items-start p-3 rounded-xl transition-all cursor-pointer border ${task.completed ? 'bg-gray-50 border-gray-50' : 'bg-white border-gray-100 hover:border-gray-200 hover:shadow-sm'}`}
+                        >
+                            <div className={`mt-0.5 mr-3 transition-colors ${task.completed ? 'text-green-500' : 'text-gray-300'}`}>
+                                {task.completed ? <CheckCircle2 size={20} /> : <Circle size={20} />}
+                            </div>
+                            <div>
+                                <p className={`text-sm font-medium transition-colors ${task.completed ? 'text-gray-400 line-through' : 'text-zinc-900'}`}>
+                                    {task.text}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Mini Kanban Board */}
+            <div className="col-span-12 md:col-span-8 bg-white rounded-[24px] p-6 border border-gray-100 shadow-sm min-h-[300px]">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="font-bold text-zinc-900 text-lg">Task Board</h3>
+                    <div className="flex space-x-2 text-xs font-medium text-gray-500">
+                        <span className="px-2 py-1 bg-gray-100 rounded">Fleet</span>
+                        <span className="px-2 py-1 bg-gray-100 rounded">Admin</span>
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 h-[220px]">
+                    {/* To Do Column */}
+                    <div className="bg-gray-50 rounded-xl p-3">
+                        <h4 className="text-xs font-bold text-gray-400 uppercase mb-3 flex items-center">
+                            <div className="w-2 h-2 rounded-full bg-gray-400 mr-2"></div> To Do
+                        </h4>
+                        <div className="space-y-2">
+                            {demoData.kanbanData.todo.map(card => (
+                                <div key={card.id} className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 cursor-move hover:shadow-md transition-shadow">
+                                    <div className="text-xs font-bold text-blue-600 mb-1">{card.tag}</div>
+                                    <p className="text-sm font-medium text-zinc-800">{card.title}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* In Progress Column */}
+                    <div className="bg-gray-50 rounded-xl p-3">
+                        <h4 className="text-xs font-bold text-gray-400 uppercase mb-3 flex items-center">
+                            <div className="w-2 h-2 rounded-full bg-yellow-500 mr-2"></div> In Progress
+                        </h4>
+                        <div className="space-y-2">
+                            {demoData.kanbanData.inProgress.map(card => (
+                                <div key={card.id} className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 cursor-move hover:shadow-md transition-shadow">
+                                    <div className="text-xs font-bold text-orange-600 mb-1">{card.tag}</div>
+                                    <p className="text-sm font-medium text-zinc-800">{card.title}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Done Column */}
+                    <div className="bg-gray-50 rounded-xl p-3">
+                        <h4 className="text-xs font-bold text-gray-400 uppercase mb-3 flex items-center">
+                            <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div> Done
+                        </h4>
+                        <div className="space-y-2">
+                             {demoData.kanbanData.done.map(card => (
+                                <div key={card.id} className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 opacity-60">
+                                    <div className="text-xs font-bold text-gray-500 mb-1">{card.tag}</div>
+                                    <p className="text-sm font-medium text-zinc-800 line-through">{card.title}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {/* 6. Quick Actions (Bottom) */}
         <div className="col-span-12 bg-white rounded-[24px] p-6 border border-gray-100 shadow-sm">
             <h3 className="font-bold text-zinc-900 text-lg mb-4">Quick Actions</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button className="flex items-center p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-black hover:text-white hover:border-black transition-all group">
+                <button 
+                    onClick={() => setNewBookingOpen(true)}
+                    className="flex items-center p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-black hover:text-white hover:border-black transition-all group"
+                >
                     <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mr-3 group-hover:bg-gray-800 group-hover:text-blue-400">
                         <Plus size={20} />
                     </div>
@@ -214,7 +363,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
                     </div>
                 </button>
 
-                <button className="flex items-center p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-black hover:text-white hover:border-black transition-all group">
+                <button 
+                    onClick={() => setBroadcastOpen(true)}
+                    className="flex items-center p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-black hover:text-white hover:border-black transition-all group"
+                >
                     <div className="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center mr-3 group-hover:bg-gray-800 group-hover:text-purple-400">
                         <Megaphone size={20} />
                     </div>
@@ -234,7 +386,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
                     </div>
                 </button>
 
-                <button className="flex items-center p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-black hover:text-white hover:border-black transition-all group">
+                <button 
+                    onClick={handlePayroll}
+                    className="flex items-center p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-black hover:text-white hover:border-black transition-all group"
+                >
                     <div className="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center mr-3 group-hover:bg-gray-800 group-hover:text-green-400">
                         <DollarSign size={20} />
                     </div>
@@ -247,6 +402,178 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
         </div>
 
       </div>
+
+      {/* --- MODALS --- */}
+
+      {/* 1. Full Dispatch Board Modal */}
+      {isDispatchOpen && (
+        <div className="fixed inset-0 z-50 bg-white animate-fade-in flex flex-col">
+            <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0">
+                <div>
+                    <h2 className="text-2xl font-bold text-zinc-900">Dispatch Board</h2>
+                    <p className="text-gray-500 text-sm">Real-time job tracking and assignment</p>
+                </div>
+                <div className="flex items-center space-x-4">
+                    <div className="relative">
+                        <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <input type="text" placeholder="Search bookings..." className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+                    </div>
+                    <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50">
+                        <Filter size={18} className="text-gray-600" />
+                    </button>
+                    <button onClick={() => setDispatchOpen(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                        <X size={24} className="text-gray-500" />
+                    </button>
+                </div>
+            </div>
+            
+            <div className="flex-1 overflow-auto p-8 bg-gray-50">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <table className="w-full text-left">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">ID</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Time</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Customer</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Service</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Assigned To</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Price</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            {demoData.dispatchBoardData.map((row) => (
+                                <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="px-6 py-4 font-mono text-sm text-gray-500">{row.id}</td>
+                                    <td className="px-6 py-4 text-sm font-bold text-zinc-900">{row.time}</td>
+                                    <td className="px-6 py-4">
+                                        <div className="text-sm font-medium text-zinc-900">{row.customer}</div>
+                                        <div className="text-xs text-gray-400">{row.address}</div>
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-gray-600">{row.service}</td>
+                                    <td className="px-6 py-4">
+                                        {row.cleaner !== 'Unassigned' ? (
+                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                                                {row.cleaner}
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 flex items-center">
+                                                <AlertCircle size={10} className="mr-1" /> Unassigned
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wide ${
+                                            row.status === 'Completed' ? 'bg-gray-100 text-gray-600' :
+                                            row.status === 'In Progress' ? 'bg-green-100 text-green-800' :
+                                            row.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                                            'bg-blue-50 text-blue-800'
+                                        }`}>
+                                            {row.status}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-sm font-medium text-zinc-900 text-right">${row.price}</td>
+                                    <td className="px-6 py-4 text-right">
+                                        <button className="text-gray-400 hover:text-black">
+                                            <MoreVertical size={18} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+      )}
+
+      {/* 2. New Booking Modal */}
+      {isNewBookingOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-fade-in-up">
+                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                    <h3 className="font-bold text-lg">New Manual Booking</h3>
+                    <button onClick={() => setNewBookingOpen(false)}><X size={20} className="text-gray-500" /></button>
+                </div>
+                <div className="p-6 space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent" placeholder="e.g. John Doe" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                             <div className="relative">
+                                <Calendar size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                <input type="text" className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg" placeholder="Select date" />
+                             </div>
+                        </div>
+                        <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                             <div className="relative">
+                                <Clock size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                <input type="text" className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg" placeholder="09:00 AM" />
+                             </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Service Type</label>
+                        <select className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white">
+                            <option>Standard Clean</option>
+                            <option>Deep Clean</option>
+                            <option>Move-In/Out</option>
+                        </select>
+                    </div>
+                    <button 
+                        onClick={() => setNewBookingOpen(false)}
+                        className="w-full bg-black text-white font-medium py-3 rounded-lg mt-4 hover:bg-gray-800 transition-colors"
+                    >
+                        Create Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+      )}
+
+      {/* 3. Broadcast Modal */}
+      {isBroadcastOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+             <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-fade-in-up">
+                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                    <h3 className="font-bold text-lg flex items-center">
+                        <Megaphone size={18} className="mr-2 text-purple-600" />
+                        Fleet Broadcast
+                    </h3>
+                    <button onClick={() => setBroadcastOpen(false)}><X size={20} className="text-gray-500" /></button>
+                </div>
+                <div className="p-6">
+                    <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-3 text-xs text-yellow-800 mb-4">
+                        This message will be sent to <b>12 active crews</b> via SMS and App Push Notification.
+                    </div>
+                    <textarea 
+                        className="w-full border border-gray-300 rounded-xl p-4 min-h-[120px] focus:ring-2 focus:ring-black focus:border-transparent mb-4"
+                        placeholder="Type your announcement here..."
+                    ></textarea>
+                    <div className="flex justify-end space-x-3">
+                        <button 
+                            onClick={() => setBroadcastOpen(false)}
+                            className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            onClick={() => setBroadcastOpen(false)}
+                            className="px-6 py-2 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700"
+                        >
+                            Send Broadcast
+                        </button>
+                    </div>
+                </div>
+             </div>
+        </div>
+      )}
+
     </div>
   );
 };
