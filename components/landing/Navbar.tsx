@@ -26,7 +26,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onNavigate }) => 
             <a href="#" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">Pricing</a>
             <a href="#" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">About</a>
             <a href="#" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">Contact</a>
-            <button onClick={() => onNavigate('admin')} className="text-sm font-medium text-gray-400 hover:text-black transition-colors">Admin Demo</button>
           </div>
 
           <div className="hidden md:flex items-center space-x-6">

@@ -4,7 +4,6 @@ import { Hero } from './components/landing/Hero';
 import { ServicesSection } from './components/landing/ServicesSection';
 import { ProcessSection } from './components/landing/ProcessSection';
 import { BookingWizard } from './components/booking/BookingWizard';
-import { AdminDashboard } from './components/admin/AdminDashboard';
 import { CustomerDashboard } from './components/customer/CustomerDashboard';
 import { Sparkles } from 'lucide-react';
 
@@ -87,12 +86,8 @@ const Footer = () => (
 );
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'admin' | 'customer'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'customer'>('home');
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-
-  if (currentView === 'admin') {
-    return <AdminDashboard onBack={() => setCurrentView('home')} />;
-  }
 
   if (currentView === 'customer') {
     return <CustomerDashboard onLogout={() => setCurrentView('home')} onNewBooking={() => setIsBookingOpen(true)} />;

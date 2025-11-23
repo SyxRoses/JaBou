@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'dark';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
 }
@@ -20,8 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
     primary: "bg-black text-white hover:bg-gray-800 border border-transparent shadow-sm",
     secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 border border-transparent",
     outline: "bg-white text-gray-900 border border-gray-300 hover:bg-gray-50",
-    ghost: "bg-transparent text-gray-600 hover:bg-gray-100",
-    dark: "bg-brand-accent text-white hover:bg-blue-600 shadow-md shadow-blue-900/20" // For admin dashboard
+    ghost: "bg-transparent text-gray-600 hover:bg-gray-100"
   };
 
   const sizes = {
