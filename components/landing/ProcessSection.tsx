@@ -1,10 +1,14 @@
+
 import React from 'react';
 import { MapPin, Calendar, Sparkles } from 'lucide-react';
-import { Button } from '../ui/Button';
+import { Button } from '../ui/Button'; 
 
 interface ProcessSectionProps {
   onBook: () => void;
 }
+
+// High-quality professional cleaning image from Unsplash
+const CLEANING_CREW_IMAGE_PATH = 'https://images.unsplash.com/photo-1581578731117-10d52143b1e8?q=80&w=2070&auto=format&fit=crop';
 
 export const ProcessSection: React.FC<ProcessSectionProps> = ({ onBook }) => {
   return (
@@ -59,7 +63,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onBook }) => {
             </div>
 
             <div className="mt-12">
-               <Button onClick={onBook} size="lg" className="rounded-full px-8">
+               <Button onClick={onBook} size="lg" className="rounded-full px-8"> 
                  Book service
                </Button>
             </div>
@@ -67,10 +71,10 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onBook }) => {
 
           {/* Right Image */}
           <div className="relative">
-             <div className="aspect-w-4 aspect-h-3 rounded-3xl overflow-hidden shadow-2xl">
+             <div className="rounded-3xl overflow-hidden shadow-2xl h-[500px] bg-gray-100">
                <img 
-                 src="https://plus.unsplash.com/premium_photo-1661342406213-33230c49219c?q=80&w=2070&auto=format&fit=crop" 
-                 alt="Professional Cleaner" 
+                 src={CLEANING_CREW_IMAGE_PATH} 
+                 alt="Professional cleaning team at work" 
                  className="w-full h-full object-cover"
                />
              </div>

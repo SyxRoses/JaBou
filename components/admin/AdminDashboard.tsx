@@ -18,7 +18,9 @@ import {
   Circle,
   AlertCircle,
   MoreVertical,
-  Calendar
+  Calendar,
+  ClipboardList,
+  Layout
 } from 'lucide-react';
 import { LiveMap } from './LiveMap';
 
@@ -75,6 +77,8 @@ const demoData = {
     { id: 'B-1006', customer: 'Lucas Bakery', address: 'Magazine St', service: 'Standard', cleaner: 'Jessica R.', price: 150, status: 'Pending', time: '02:30 PM' },
     { id: 'B-1007', customer: 'Uptown Yoga', address: 'Prytania St', service: 'Deep Clean', cleaner: 'Unassigned', price: 280, status: 'Pending', time: '04:00 PM' },
     { id: 'B-1008', customer: 'Private Residence', address: 'St Charles Ave', service: 'Standard', cleaner: 'Sarah J.', price: 180, status: 'Scheduled', time: '04:30 PM' },
+    { id: 'B-1009', customer: 'Tech Hub Office', address: 'Poydras St', service: 'Office Clean', cleaner: 'Team Delta', price: 500, status: 'Scheduled', time: '06:00 PM' },
+    { id: 'B-1010', customer: 'Dr. Stevens', address: 'Nashville Ave', service: 'Deep Clean', cleaner: 'Unassigned', price: 320, status: 'Pending', time: '07:00 PM' },
   ]
 };
 

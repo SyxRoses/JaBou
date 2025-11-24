@@ -3,6 +3,7 @@ import { Navbar } from './components/landing/Navbar';
 import { Hero } from './components/landing/Hero';
 import { ServicesSection } from './components/landing/ServicesSection';
 import { ProcessSection } from './components/landing/ProcessSection';
+import { ImageGallery } from './components/landing/ImageGallery';
 import { BookingWizard } from './components/booking/BookingWizard';
 import { CustomerDashboard } from './components/customer/CustomerDashboard';
 import { AdminDashboard } from './components/admin/AdminDashboard';
@@ -109,6 +110,7 @@ const App: React.FC = () => {
         <Hero onStartBooking={() => setIsBookingOpen(true)} />
         <TrustedBy />
         <ServicesSection />
+        <ImageGallery />
         <ProcessSection onBook={() => setIsBookingOpen(true)} />
         <Footer />
       </main>
